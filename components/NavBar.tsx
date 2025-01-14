@@ -3,12 +3,14 @@
 import React from 'react';
 import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
 import { UsersIcon, BriefcaseIcon, LogoutIcon } from "@heroicons/react/outline";
+import Link from 'next/link';
+
 
 const navigation = [
-  { name: 'Dashboard', href: '#', current: true },
-  { name: 'Proveedores', href: '#', current: false },
-  { name: 'Clientes', href: '#', current: false },
-  { name: 'Usuarios', href: '#', current: false },
+  { name: 'Dashboard', href: '/dashboard', current: true },
+  { name: 'Proveedores', href: '/proveedores', current: false },
+  { name: 'Clientes', href: '/clientes', current: false },
+  { name: 'Usuarios', href: '/users', current: false },
 ]
 
 function classNames(...classes: string[]): string{
@@ -38,7 +40,7 @@ export default function Example() {
             <div className="hidden sm:ml-6 sm:block">
               <div className="flex space-x-4">
                 {navigation.map((item) => (
-                  <a
+                  <Link
                     key={item.name}
                     href={item.href}
                     aria-current={item.current ? 'page' : undefined}
@@ -48,7 +50,7 @@ export default function Example() {
                     )}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 ))}
               </div>
             </div>

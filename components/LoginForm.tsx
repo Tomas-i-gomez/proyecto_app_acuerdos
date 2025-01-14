@@ -1,8 +1,8 @@
 'use client';
 import React from 'react';
 import Image from 'next/image';
-
-
+import Dashboard from '../dashboard/page';
+import Link from 'next/link';
 
 
 const LoginForm = () => {
@@ -26,13 +26,13 @@ const LoginForm = () => {
             />
           </div>
           <div className="flex space-x-4">
-            
             <button
               type="button"
               className="w-full py-2 bg-blue-500 text-white rounded-lg font-medium hover:bg-blue-600"
             >
               Registrarse
             </button>
+            
             <button
               type="button"
               className="w-full py-2 bg-green-500 text-white rounded-lg font-medium hover:bg-green-600"

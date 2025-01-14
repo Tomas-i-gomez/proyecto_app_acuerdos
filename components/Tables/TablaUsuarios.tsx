@@ -54,7 +54,7 @@ const UserTable = () => {
     <div className="p-8 bg-gray-100 min-h-screen">
       <div className="max-w-4xl mx-auto bg-white shadow rounded-lg">
         <div className="p-6">
-          <h2 className="text-xl font-bold text-gray-800">Users</h2>
+          <h2 className="text-xl font-bold text-gray-800">Usuarios</h2>
           <p className="text-sm text-gray-600">
             A list of all the users in your account including their name, title, email, and role.
           </p>
