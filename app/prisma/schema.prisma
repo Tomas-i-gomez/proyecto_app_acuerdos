@@ -8,7 +8,7 @@ datasource db {
 }
 
 model clientes {
-  id           Int    @id
+  id           Int    @id @default(autoincrement())
   ramoId       Int
   razon_social String @db.VarChar(500)
   ramo         ramo   @relation(fields: [ramoId], references: [id], map: "Clientes_ramoId_fkey")
