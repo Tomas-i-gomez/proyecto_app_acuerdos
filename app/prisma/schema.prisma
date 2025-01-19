@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = "mysql://root:lebrontomi@localhost:3306/acuerdosdb"
+}
+
+model clientes {
+  id           Int    @id
+  ramoId       Int
+  razon_social String @db.VarChar(500)
+  ramo         ramo   @relation(fields: [ramoId], references: [id], map: "Clientes_ramoId_fkey")
+
+  @@index([ramoId], map: "Clientes_ramoId_fkey")
+}
+
+model condiciones_comerciales {
+  id          Int         @id @default(autoincrement())
+  condicion   String
+  proveedorId Int
+  ramoId      Int
+  ramo        ramo        @relation(fields: [ramoId], references: [id], map: "Condiciones_ramoId_fkey")
+  proveedor   proveedores @relation(fields: [proveedorId], references: [id], map: "Proveedores_proveedorId_fkey")
+
+  @@index([ramoId], map: "Condiciones_ramoId_fkey")
+  @@index([proveedorId], map: "Proveedores_proveedorId_fkey")
+}
+
+model proveedores {
+  id        Int                       @id @default(autoincrement())
+  name      String                    @unique
+  condicion condiciones_comerciales[]
+}
+
+model ramo {
+  id        Int                       @id @default(autoincrement())
+  name      String                    @unique
+  clientes  clientes[]
+  condicion condiciones_comerciales[]
+}
+
+model usuario {
+  id    Int    @id @default(autoincrement())
+  name  String
+  clave String
+  mail  String @unique
+  rol   Role
+}
+
+enum Role {
+  Admin
+  Vendedor
+  Proveedor
+}
