@@ -17,9 +17,9 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
-      const { id, razon_social, ramo } = await req.json();
+      const { id, razon_social, ramoId } = await req.json();
   
-      if (!id || !razon_social || !ramo) {
+      if (!id || !razon_social || !ramoId) {
         return NextResponse.json(
           { error: "Todos los campos (Numero Cliente, nombre, telefono, ramo) son requeridos" },
           { status: 400 }
@@ -28,11 +28,14 @@ export async function POST(req: NextRequest) {
       // Crear el cliente en la base de datos
       const nuevoCliente = await prisma.clientes.create({
         data: {
-          id,
+          id:parseInt(id),
           razon_social,
-          ramo,
+          ramoId:parseInt(ramoId),
         },
+        include:{ramo:true}
       });
+      console.log(nuevoCliente);
+      
   
       // Devolver la respuesta
       return NextResponse.json(nuevoCliente, { status: 201 });

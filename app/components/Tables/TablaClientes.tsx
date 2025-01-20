@@ -11,42 +11,48 @@ const ClientTable = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-  const [selectedClient, setSelectedClient] = useState(null);
+  const [selectedClient, setSelectedClient] = useState({ id: "", razon_social: "", ramoId: "" });
   const [searchQuery, setSearchQuery] = useState('');
   
   //----------------------------------fetching--------------------------------------------------------
    
   const {clients, removeClient, addClient, updateClient} = useClientContext()
-  const [formData, setFormData] = useState({ id: "", razon_social: "", ramo: ""})
+  const [formData, setFormData] = useState({ id: "", razon_social: "", ramoId: ""})
 
 
   const handleDelete = async (id: number) => {
-      await fetch(`/api/client/${id}`, { method: 'DELETE' });
-      removeClient(id)
+    await fetch(`/api/client/${id}`, { method: 'DELETE' });
+    removeClient(id)
   };
-  // const handleUpdate = async (id: number) => {
-  //   await fetch(`/api/client/${id}`, { method: 'PUT' });
-  //   updateClient(id);
-  // };
-  const handleSubmit = async (e: any) => {
+
+  const handleUpdateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    console.log(99999);
+    
     e.preventDefault();
-    const res = await fetch('/api/client', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(formData),
-    });
-    const newClient = await res.json()
+    updateClient(Number(selectedClient.id), selectedClient);
+    closeModal();
+  };
+
+
+  const handleCreateSubmit = async (e: any) => {
+    e.preventDefault();
+    
+    const newClient = await fetch('/api/client', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(formData),
+    }).then((res) => res.json());
+
     addClient(newClient)
-    setFormData({ id: "", razon_social: "", ramo: ""})
-};
+    setFormData({ id: "", razon_social: "", ramoId: "" })
+  };
 
 
   const totalPages = Math.ceil(clients.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const filteredClients = clients.filter((client) =>
-    client.razon_social.toLowerCase().includes(searchQuery.toLowerCase())
-  );
+  const filteredClients = clients ?
+    clients.filter((client) => client.razon_social?.toLowerCase().includes(searchQuery.toLowerCase())): [];
   const currentClients = filteredClients.slice(startIndex, endIndex);
  
   // Función para abrir el modal y agregar un usuario
@@ -56,7 +62,7 @@ const ClientTable = () => {
   };
   // Función para cerrar el modal
   const AddCloseModal = () => {
-    setSelectedClient(null);
+    setSelectedClient({ id: "", razon_social: "", ramoId: ""});
     setIsModalOpenAdd(false);
   };
 
@@ -68,15 +74,24 @@ const ClientTable = () => {
 
   // Función para cerrar el modal
   const closeModal = () => {
-    setSelectedClient(null);
+    setSelectedClient({ id: "", razon_social: "", ramoId: ""});
     setIsModalOpen(false);
   };
 
   // Función para manejar los cambios en los campos
-  const handleInputChange = (e:any) => {
+  const handleInputChange = (e:React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setSelectedClient({ ...selectedClient, [name]: value });
   };
+
+  // Filtramos RAMOS UNICOS para el dropdown
+  const uniqueRamos = [
+    ...new Map(
+      clients
+        .filter((client) => client.ramo && client.ramo.id) // Filtrar objetos válidos
+        .map((client) => [client.ramo.id, client.ramo])
+    ).values(),
+  ];
 
   return (
     <div>
@@ -180,14 +195,14 @@ const ClientTable = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-96">
             <h2 className="text-lg font-bold mb-4">Editar Cliente</h2>
-            <form>
+            <form onSubmit={handleUpdateSubmit}>
             <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Nro Cliente</label>
                 <input
-                  type="text"
+                  type="number"
                   name="nroCliente"
                   value={selectedClient.id}
-                  onChange={handleInputChange}
+                  onChange={(e) => handleInputChange(e)}
                   className="mt-1 p-2 border w-full rounded-lg"
                 />
               </div>
@@ -201,15 +216,24 @@ const ClientTable = () => {
                   className="mt-1 p-2 border w-full rounded-lg"
                 />
               </div>
+              
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Ramo</label>
-                <input
-                  type="text"
-                  name="Ramo"
-                  value={selectedClient.ramo.name}
-                  onChange={handleInputChange}
-                  className="mt-1 p-2 border w-full rounded-lg"
-                />
+                <select
+                    value={formData.ramoId}
+                    onChange={(e) => setFormData({ ...formData, ramoId: e.target.value })}
+                    required
+                    className="w-full text-black px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="" disabled>
+                        Selecciona un Ramo
+                    </option>
+                    {uniqueRamos.map((uniqueRamo) => (
+                        <option key={uniqueRamo.id} value={uniqueRamo.id}>
+                            {uniqueRamo.name}
+                        </option>
+                    ))}
+                </select>
               </div>
               <div className="flex justify-end">
                 <button
@@ -220,8 +244,7 @@ const ClientTable = () => {
                   Cancelar
                 </button>
                 <button
-                  type="button"
-                  onClick={closeModal}
+                  type="submit"
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
                 >
                   Guardar
@@ -236,7 +259,7 @@ const ClientTable = () => {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white rounded-lg shadow-lg p-6 w-96">
             <h2 className="text-lg font-bold mb-4">Agregar Cliente</h2>
-            <form onClick={handleSubmit}>
+            <form onSubmit={handleCreateSubmit}>
             <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Nro Cliente</label>
                 <input
@@ -260,15 +283,21 @@ const ClientTable = () => {
                 />
               </div>
               <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700">Ramo</label>
-                <input
-                  type="text"
-                  name="Ramo"
-                  value={formData.ramo}
-                  onChange={(e) => setFormData({ ...formData, ramo: e.target.value })}
-                  required
-                  className="mt-1 p-2 border w-full rounded-lg"
-                />
+              <select
+                    value={formData.ramoId}
+                    onChange={(e) => setFormData({ ...formData, ramoId: e.target.value })}
+                    required
+                    className="w-full text-black px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+                >
+                    <option value="" disabled>
+                        Selecciona un Ramo
+                    </option>
+                    {uniqueRamos.map((uniqueRamo) => (
+                        <option key={uniqueRamo.id} value={uniqueRamo.id}>
+                            {uniqueRamo.name}
+                        </option>
+                    ))}
+                </select>
               </div>
               <div className="flex justify-end">
                 <button
@@ -280,10 +309,9 @@ const ClientTable = () => {
                 </button>
                 <button
                   type="submit"
-                  onClick={AddCloseModal}
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
                 >
-                  Agregar
+                  Agregar as
                 </button>
               </div>
             </form>
