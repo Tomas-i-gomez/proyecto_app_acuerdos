@@ -3,8 +3,9 @@
 // export default Dashboard;
 import Card from "../components/Card";
 import NavBar from './NavBar';
-import { UsersIcon, BriefcaseIcon, LogoutIcon } from "@heroicons/react/outline";
+import { UsersIcon, BriefcaseIcon, TableIcon } from "@heroicons/react/outline";
 import Link from "next/link";
+import React, { useEffect, useState } from "react";
 
 export default function Home() {
   const cards = [
@@ -14,7 +15,8 @@ export default function Home() {
       description: "Gestionar los descuentos que brinda el proveedor según el ramo del Cliente.",
       bgColor: "bg-green-100",
       iconColor: "text-green-500",
-      href: "/proveedores"
+      href: "/proveedores",
+      // Inicializamos el contador
     },
     {
       icon: <UsersIcon className="h-6 w-6" />,
@@ -22,7 +24,8 @@ export default function Home() {
       description: "Clientes estratégicos que tienen condiciones comerciales especiales según el proveedor.",
       bgColor: "bg-purple-100",
       iconColor: "text-purple-500",
-      href: "/clientes"
+      href: "/clientes",
+      
     },
     {
       icon: <UsersIcon className="h-6 w-6" />,
@@ -30,15 +33,20 @@ export default function Home() {
       description: "Gestionar usuarios de la aplicación, ver, crear, editar y eliminar usuarios.",
       bgColor: "bg-blue-100",
       iconColor: "text-blue-500",
-      href: "/users"
+      href: "/users",
+      
     },
     {
-      icon: <LogoutIcon className="h-6 w-6" />,
-      title: "Cerrar Sesión",
+      icon: <TableIcon className="h-6 w-6" />,
+      title: "Gestionar Ramo de Clientes",
+      description: "Gestionar ramos de la aplicación, ver, crear y eliminar ramos.",
       bgColor: "bg-red-100",
       iconColor: "text-yellow-500",
+      href: "/ramo",
+      
     },
   ];
+  
 
   return (
     <div>
@@ -63,3 +71,5 @@ export default function Home() {
     </div>
   );
 }
+
+

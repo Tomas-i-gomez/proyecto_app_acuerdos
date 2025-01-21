@@ -4,10 +4,11 @@ import { useState, useEffect} from "react";
 import NavBar from '../NavBar';
 import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
 import { useClientContext } from "@/app/context/ClientContext";
+import { useRamoContext } from "@/app/context/RamoContext";
 
 const ClientTable = () => {
 
-  const itemsPerPage = 5;
+  const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -17,6 +18,7 @@ const ClientTable = () => {
   //----------------------------------fetching--------------------------------------------------------
    
   const {clients, removeClient, addClient, updateClient} = useClientContext()
+  const {ramos} = useRamoContext()
   const [formData, setFormData] = useState({ id: "", razon_social: "", ramoId: ""})
 
 
@@ -45,6 +47,7 @@ const ClientTable = () => {
 
     addClient(newClient)
     setFormData({ id: "", razon_social: "", ramoId: "" })
+    closeModal();
   };
 
 
@@ -52,7 +55,7 @@ const ClientTable = () => {
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
   const filteredClients = clients ?
-    clients.filter((client) => client.razon_social?.toLowerCase().includes(searchQuery.toLowerCase())): [];
+    clients.filter((client) => client.razon_social.toLowerCase().includes(searchQuery.toLowerCase())): [];
   const currentClients = filteredClients.slice(startIndex, endIndex);
  
   // Función para abrir el modal y agregar un usuario
@@ -84,14 +87,9 @@ const ClientTable = () => {
     setSelectedClient({ ...selectedClient, [name]: value });
   };
 
-  // Filtramos RAMOS UNICOS para el dropdown
-  const uniqueRamos = [
-    ...new Map(
-      clients
-        .filter((client) => client.ramo && client.ramo.id) // Filtrar objetos válidos
-        .map((client) => [client.ramo.id, client.ramo])
-    ).values(),
-  ];
+  // Filtramos RAMOS UNICOS para el dropdown 
+  const uniqueRamos = ramos.filter((ramo) => ramo.name);
+
 
   return (
     <div>
@@ -201,7 +199,7 @@ const ClientTable = () => {
                 <input
                   type="number"
                   name="nroCliente"
-                  value={selectedClient.id}
+                  value={selectedClient?.id}
                   onChange={(e) => handleInputChange(e)}
                   className="mt-1 p-2 border w-full rounded-lg"
                 />
@@ -211,8 +209,8 @@ const ClientTable = () => {
                 <input
                   type="text"
                   name="name"
-                  value={selectedClient.razon_social}
-                  onChange={handleInputChange}
+                  value={selectedClient?.razon_social}
+                  onChange={(e) => handleInputChange(e)}
                   className="mt-1 p-2 border w-full rounded-lg"
                 />
               </div>
@@ -220,8 +218,8 @@ const ClientTable = () => {
               <div className="mb-4">
                 <label className="block text-sm font-medium text-gray-700">Ramo</label>
                 <select
-                    value={formData.ramoId}
-                    onChange={(e) => setFormData({ ...formData, ramoId: e.target.value })}
+                    value={selectedClient?.ramoId}
+                    onChange={(e) => setSelectedClient({ ...selectedClient, ramoId: e.target.value })}
                     required
                     className="w-full text-black px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
                 >
@@ -311,7 +309,7 @@ const ClientTable = () => {
                   type="submit"
                   className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
                 >
-                  Agregar as
+                  Agregar
                 </button>
               </div>
             </form>

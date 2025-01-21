@@ -10,7 +10,9 @@ const navigation = [
   { name: 'Dashboard', href: '/dashboard', current: true },
   { name: 'Proveedores', href: '/proveedores', current: false },
   { name: 'Clientes', href: '/clientes', current: false },
+  { name: 'Ramos', href: '/ramo', current: false },
   { name: 'Usuarios', href: '/users', current: false },
+  
 ]
 
 function classNames(...classes: string[]): string{

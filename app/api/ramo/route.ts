@@ -13,25 +13,26 @@ export async function GET() {
 
 export async function POST(req: NextRequest) {
     try {
-      const {name} = await req.json();
+      const { name } = await req.json();
   
       if (!name) {
         return NextResponse.json(
-          { error: "Todos los campos son requeridos" },
+          { error: "Es requerido el nombre del ramo para crearlo" },
           { status: 400 }
         );
       }
       // Crear el cliente en la base de datos
       const nuevoRamo = await prisma.ramo.create({
         data: {
-          name
-        },
-      });
+          name,
+        }});
+      console.log(nuevoRamo);
+      
   
       // Devolver la respuesta
       return NextResponse.json(nuevoRamo, { status: 201 });
     } catch (error) {
-      console.error("Error al crear el ramo:", error);
+      console.error("Error al crear ramo:", error);
       return NextResponse.json(
         { error: "Error interno del servidor" },
         { status: 500 }

@@ -21,7 +21,7 @@ export async function POST(req: NextRequest) {
   
       if (!id || !razon_social || !ramoId) {
         return NextResponse.json(
-          { error: "Todos los campos (Numero Cliente, nombre, telefono, ramo) son requeridos" },
+          { error: "Todos los campos (Numero Cliente, nombre, ramo) son requeridos" },
           { status: 400 }
         );
       }
