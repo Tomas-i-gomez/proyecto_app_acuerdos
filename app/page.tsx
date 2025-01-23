@@ -7,9 +7,9 @@ import UserTable from "./components/Tables/TablaUsuarios";
 export default function Home() {
   return (
     <div>
-      <LoginForm />
+      {/* <LoginForm /> */}
       {/* < Dashboard/> */}
-      {/* <Proveedores /> */}
+      <Proveedores />
       {/* <UserTable /> */}
     </div>
   );

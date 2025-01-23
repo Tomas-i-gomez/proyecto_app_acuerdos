@@ -1,78 +1,52 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import NavBar from "./NavBar";
-import {
-  UsersIcon,
-  CheckCircleIcon,
-  RewindIcon,
-  CashIcon,
-  ClipboardIcon,
-} from "@heroicons/react/outline";
+import { ClipboardIcon, TrashIcon } from "@heroicons/react/outline";
+import { useProveedorContext } from "../context/ProveedorContext";
 
-// const Proveedores = () => {
-//   const buttons = [
-//     { label: "Fratelli Branca Destilerias", image: "/logoBranca.jpg" },
-//     { label: "Bodegas Chandon", image: "/logoChandon.png" },
-//     { label: "Bodega Las Perdices", image: "/logoPerdices.png" },
-//     { label: "+ Agregar Proveedor", image: "" },
-//   ];
+const ProveedoresTable = () => {
+  const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
+  const [selectedProveedor, setSelectedProveedor] = useState({
+    id: "",
+    name: "",
+  });
+  const { proveedores, addProveedor, removeProveedor } = useProveedorContext();
 
-//   return (
-//     <div>
-//       <NavBar />
-//       <div className="bg-gray-300 flex items-center justify-center min-h-screen">
-//         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
-//           {buttons.map((button, index) => (
-//             <button
-//               key={index}
-//               className="w-60 h-80 bg-black text-white rounded-2xl text-center font-medium text-xl hover:bg-gray-800 flex flex-col overflow-hidden"
-//             >
-//               {button.image && (
-//                 <div className="w-full h-[70%]">
-//                   <img
-//                     src={button.image}
-//                     alt={button.label}
-//                     className="w-full h-full object-cover"
-//                   />
-//                 </div>
-//               )}
-//               <div className="flex-1 flex items-center justify-center font-sans px-6">
-//                 {button.label}
-//               </div>
-//             </button>
-//           ))}
-//         </div>
-//       </div>
-//     </div>
-//   );
-// };
+  const [formData, setFormData] = useState({
+    id: "",
+    name: "",
+  });
 
-// export default Proveedores;
+  const handleDelete = async (id: number) => {
+    await fetch(`/api/proveedores/${id}`, { method: "DELETE" });
+    removeProveedor(id);
+  };
 
-const Proveedores = () => {
-  const features = [
-    {
-      title: "Fratelli Branca Destilerías",
-      description:
-        "Non quo aperiam repellendus quas est est. Eos aut dolore aut ut sit nesciunt. Ex tempora quia.",
-      icon: <ClipboardIcon className="h-6 w-6" />,
-    },
-    {
-      title: "Bodegas Chandon",
-      description:
-        "Vero eum voluptatem aliquam nostrum voluptatem. Vitae esse natus. A inventore et molestiae natus.",
-      icon: <ClipboardIcon className="h-6 w-6" />,
-    },
-    {
-      title: "Bodega Viña Las Perdices",
-      description:
-        "Et quod quaerat dolorem quaerat architecto aliquam accusantium. Ex adipisci et doloremque autem.",
-      icon: <ClipboardIcon className="h-6 w-6" />,
-    },
-  ];
+  const handleCreateSubmit = async (e: any) => {
+    e.preventDefault();
+    const newProveedor = await fetch("/api/proveedores", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(formData),
+    }).then((res) => res.json());
+
+    addProveedor(newProveedor);
+    setFormData({ id: "", name: "" });
+    AddCloseModal();
+  };
+
+  const AddOpenModal = (proveedor: any) => {
+    setSelectedProveedor(proveedor);
+    setIsModalOpenAdd(true);
+  };
+  // Función para cerrar el modal
+  const AddCloseModal = () => {
+    setSelectedProveedor({ id: "", name: "" });
+    setIsModalOpenAdd(false);
+  };
 
   return (
-    <div>
+    <div className="bg-gray-100 min-h-screen">
       <NavBar />
       <div className="bg-gray-100 py-16 px-6 sm:px-12 lg:px-20">
         <div className="max-w-7xl mx-auto text-center">
@@ -87,37 +61,94 @@ const Proveedores = () => {
           </p>
         </div>
 
-        <div className="mt-12 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
-          {features.map((feature, index) => (
-            <div key={index} className="text-center">
-              <div className="flex justify-center items-center h-12 w-12 mx-auto mb-4 bg-purple-100 rounded-full text-purple-600">
-                {feature.icon}
+        <div className="mt-8 grid gap-8 sm:grid-cols-2 lg:grid-cols-3 max-w-7xl mx-auto">
+          {proveedores.map((proveedor, index) => (
+            <div
+              key={index}
+              className="text-center border-r border-gray-300 rounded-lg p-6"
+            >
+              <div className="flex justify-center items-center h-12 w-12 mx-auto mb-4 bg-green-100 rounded-full text-green-600">
+                <ClipboardIcon className="h-6 w-6" />
               </div>
-              <h3 className="text-lg font-medium text-gray-900">
-                {feature.title}
+              <h3 className="text-xl font-medium text-gray-900 font-bold mb-3">
+                {proveedor.name}
               </h3>
-              <p className="mt-2 text-sm text-gray-500">
-                {feature.description}
-              </p>
               <a
                 href="#"
-                className="mt-4 text-purple-600 font-medium hover:underline"
+                className="text-green-600 font-large font-bold hover:underline"
               >
                 Ver Clientes →
               </a>
+              <div className="flex items-center justify-center mt-10 space-x-4">
+                <button
+                  onClick={() => {
+                    const confirmed = window.confirm(
+                      "¿Estás seguro de eliminar el proveedor?"
+                    );
+                    if (confirmed) {
+                      handleDelete(proveedor.id); // Si el usuario confirma, llama a la función de eliminar
+                    }
+                  }}
+                  className="text-red-600 hover:text-red-800 font-medium flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
+                >
+                  <TrashIcon className="h-6 w-6" />
+                </button>
+              </div>
             </div>
           ))}
         </div>
-
-        {/* Add Provider Button */}
-        <div className="mt-8 text-center">
-          <button className="px-5 py-2 bg-purple-600 text-white font-medium text-sm rounded-lg shadow-md hover:bg-purple-700 transition">
-            + Agregar Proveedor
-          </button>
-        </div>
       </div>
+
+      {/* /* Add Provider Button */}
+      <div className="text-center">
+        <button
+          onClick={AddOpenModal}
+          className="px-2 py-2 bg-green-700 text-white font-medium text-sm rounded-lg shadow-md hover:bg-green-800 transition"
+        >
+          + Agregar Proveedor
+        </button>
+      </div>
+      {isModalOpenAdd && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white rounded-lg shadow-lg p-6 w-96">
+            <h2 className="text-lg font-bold mb-4">Agregar Proveedor</h2>
+            <form onSubmit={handleCreateSubmit}>
+              <div className="mb-4">
+                <label className="block text-sm font-medium text-gray-700">
+                  Nombre del Proveedor
+                </label>
+                <input
+                  type="text"
+                  name="name"
+                  value={formData.name}
+                  onChange={(e) =>
+                    setFormData({ ...formData, name: e.target.value })
+                  }
+                  required
+                  className="mt-1 p-2 border w-full rounded-lg"
+                />
+              </div>
+              <div className="flex justify-end">
+                <button
+                  type="button"
+                  onClick={AddCloseModal}
+                  className="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg hover:bg-gray-300 mr-2"
+                >
+                  Cancelar
+                </button>
+                <button
+                  type="submit"
+                  className="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700"
+                >
+                  Agregar
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
 
-export default Proveedores;
+export default ProveedoresTable;

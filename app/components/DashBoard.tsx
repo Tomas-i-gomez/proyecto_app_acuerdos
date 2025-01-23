@@ -94,7 +94,7 @@ export default function Home() {
                   bgColor={card.bgColor}
                   iconColor={card.iconColor}
                 />
-                <div className=" absolute -top-4 -right-2 bg-red-600 text-white text-lg rounded-full h-10 w-10 flex items-center justify-center font-bold font-sans">
+                <div className=" absolute -top-4 -right-2 bg-blue-400 text-white text-lg rounded-full h-10 w-10 flex items-center justify-center font-bold font-sans">
                   {card.count}
                 </div>
               </div>

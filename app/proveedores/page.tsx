@@ -1,13 +1,13 @@
-import React from 'react'
-import Proveedores from '@/app/components/Proveedores';
+import React from "react";
+import Proveedores from "@/app/components/Proveedores";
+import { ProveedorProvider } from "../context/ProveedorContext";
 
 const ProveedoresList = () => {
-    return (
-        <div>
-            < Proveedores />
-        </div>
-    )
-}
+  return (
+    <ProveedorProvider>
+      <Proveedores />
+    </ProveedorProvider>
+  );
+};
 
 export default ProveedoresList;
-
