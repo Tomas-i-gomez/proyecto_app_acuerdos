@@ -70,9 +70,9 @@ const CondicionesTable = () => {
   const totalPages = Math.ceil(condiciones.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
-  const filteredCondiciones = ramos
-    ? ramos.filter((ramos) =>
-        ramos.name.toLowerCase().includes(searchQuery.toLowerCase())
+  const filteredCondiciones = condiciones
+    ? condiciones.filter((condiciones) =>
+        condiciones.condicion.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
   const currentCondiciones = filteredCondiciones.slice(startIndex, endIndex);
@@ -173,10 +173,11 @@ const CondicionesTable = () => {
               {currentCondiciones.map((condicion) => (
                 <tr key={condicion.id} className="border-t">
                   <td className="px-6 py-4 text-sm text-gray-800">
-                    {condicion.id}
+                    {condicion.ramo.name}
                   </td>
+
                   <td className="px-6 py-4 text-sm text-gray-800">
-                    {condicion.name}
+                    {condicion.condicion}
                   </td>
                   <td className="px-6 py-4 text-right">
                     <div className="flex items-center space-x-4">
@@ -303,21 +304,6 @@ const CondicionesTable = () => {
             <div className="bg-white rounded-lg shadow-lg p-6 w-96">
               <h2 className="text-lg font-bold mb-4">Agregar Condicion</h2>
               <form onSubmit={handleCreateSubmit}>
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Nro Cliente
-                  </label>
-                  <input
-                    type="number"
-                    name="nroCliente"
-                    value={formData.id}
-                    onChange={(e) =>
-                      setFormData({ ...formData, id: e.target.value })
-                    }
-                    required
-                    className="mt-1 p-2 border w-full rounded-lg"
-                  />
-                </div>
                 <div className="mb-4">
                   <label className="block text-sm font-medium text-gray-700">
                     Nueva Condicion Comercial
