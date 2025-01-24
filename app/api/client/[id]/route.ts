@@ -3,12 +3,11 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient({});
 
-
 //----------------------------------------------- MODELO CLIENTES ----------------------------------------------------------
 
 export async function PUT(
   request: NextRequest,
-  { params } : { params: { id: string } }
+  { params }: { params: { id: string } }
 ) {
   try {
     const id = Number(params.id); // Obtener ID desde la URL y convertirlo a número
@@ -28,7 +27,7 @@ export async function PUT(
 
     // Verificar si el cliente existe antes de actualizar
     const clienteExistente = await prisma.clientes.findUnique({
-      where: { id:Number(id) },
+      where: { id: Number(id) },
     });
     if (!clienteExistente) {
       return NextResponse.json(
@@ -39,7 +38,7 @@ export async function PUT(
 
     // Actualizar el cliente
     const clienteActualizado = await prisma.clientes.update({
-      where: { id:Number(id) },
+      where: { id: Number(id) },
       data: {
         razon_social,
         ramoId: ramoId ? Number(ramoId) : undefined, // Asegurar que ramoId sea un número si se pasa
@@ -59,19 +58,22 @@ export async function PUT(
   }
 }
 
+export async function DELETE(
+  req: NextRequest,
+  { params }: { params: { id: string } }
+) {
+  {
+    const id = parseInt(params.id);
 
+    await prisma.clientes.delete({
+      where: { id: id },
+    });
 
-export async function DELETE(req: NextRequest, {params} : {params: { id: string }}) {
-    {
-        const id = parseInt(params.id);
-      
-        await prisma.clientes.delete({
-          where: { id: id },
-        });
-      
-        return new Response(JSON.stringify({ message: "Cliente eliminado correctamente" }), {
-          status: 200,
-        });
-    }
-};
-
+    return new Response(
+      JSON.stringify({ message: "Proveedor eliminado correctamente" }),
+      {
+        status: 200,
+      }
+    );
+  }
+}

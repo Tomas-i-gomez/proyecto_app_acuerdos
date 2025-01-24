@@ -3,6 +3,7 @@ import React, { useState } from "react";
 import NavBar from "./NavBar";
 import { ClipboardIcon, TrashIcon } from "@heroicons/react/outline";
 import { useProveedorContext } from "../context/ProveedorContext";
+import Link from "next/link";
 
 const ProveedoresTable = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
@@ -73,12 +74,12 @@ const ProveedoresTable = () => {
               <h3 className="text-xl font-medium text-gray-900 font-bold mb-3">
                 {proveedor.name}
               </h3>
-              <a
-                href="#"
+              <Link
+                href={`/proveedores/${proveedor.id}`}
                 className="text-green-600 font-large font-bold hover:underline"
               >
                 Ver Clientes →
-              </a>
+              </Link>
               <div className="flex items-center justify-center mt-10 space-x-4">
                 <button
                   onClick={() => {
