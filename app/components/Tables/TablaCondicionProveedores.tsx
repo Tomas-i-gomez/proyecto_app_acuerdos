@@ -17,7 +17,7 @@ const CondicionesTable = () => {
     id: "",
     proveedorId: "",
     ramoId: "",
-    condiciones: "",
+    condicion: "",
   });
   const [searchQuery, setSearchQuery] = useState("");
 
@@ -31,7 +31,7 @@ const CondicionesTable = () => {
     id: "",
     proveedorId: "",
     ramoId: "",
-    condiciones: "",
+    condicion: "",
   });
 
   const handleDelete = async (id: number) => {
@@ -51,7 +51,7 @@ const CondicionesTable = () => {
   const handleCreateSubmit = async (e: any) => {
     e.preventDefault();
     try {
-      const response = await fetch("/api/condiciones", {
+      const response = await fetch("/api/conditions", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),
@@ -59,7 +59,7 @@ const CondicionesTable = () => {
 
       const newCondicion = await response.json();
       addCondicion(newCondicion);
-      setFormData({ id: "", proveedorId: "", ramoId: "", condiciones: "" });
+      setFormData({ id: "", ramoId: "", condicion: "", proveedorId: "" });
       AddCloseModal();
     } catch (error) {
       console.log("aaaaa", error);
@@ -88,7 +88,7 @@ const CondicionesTable = () => {
       id: "",
       proveedorId: "",
       ramoId: "",
-      condiciones: "",
+      condicion: "",
     });
     setIsModalOpenAdd(false);
   };
@@ -105,7 +105,7 @@ const CondicionesTable = () => {
       id: "",
       proveedorId: "",
       ramoId: "",
-      condiciones: "",
+      condicion: "",
     });
     setIsModalOpen(false);
   };
@@ -247,7 +247,7 @@ const CondicionesTable = () => {
                   <input
                     type="text"
                     name="name"
-                    value={selectedCondiciones?.condiciones}
+                    value={selectedCondiciones?.condicion}
                     onChange={(e) => handleInputChange(e)}
                     className="mt-1 p-2 border w-full rounded-lg"
                   />
@@ -325,9 +325,9 @@ const CondicionesTable = () => {
                   <input
                     type="text"
                     name="name"
-                    value={formData.condiciones}
+                    value={formData.condicion}
                     onChange={(e) =>
-                      setFormData({ ...formData, condiciones: e.target.value })
+                      setFormData({ ...formData, condicion: e.target.value })
                     }
                     required
                     className="mt-1 p-2 border w-full rounded-lg"

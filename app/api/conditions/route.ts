@@ -3,8 +3,6 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient({});
 
-
-
 export async function GET() {
   const condiciones = await prisma.condiciones_comerciales.findMany({
     include: {
@@ -20,19 +18,19 @@ export async function POST(req: NextRequest) {
   try {
     const { condicion, ramo, proveedor } = await req.json();
 
-    if (!condicion || !ramo || !proveedor) { 
+    if (!condicion || !ramo || !proveedor) {
       return NextResponse.json(
         { error: "Todos los campos son requeridos" },
         { status: 400 }
       );
     }
 
-    // Buscar IDs correspondientes utilizando el campo único `name`
+    // Buscar IDs correspondientes
     const ramoData = await prisma.ramo.findUnique({
-      where: { name: ramo }, // Buscar por el campo único `name`
+      where: { name: ramo },
     });
     const proveedorData = await prisma.proveedores.findUnique({
-      where: { name: proveedor }, // Buscar por el campo único `name`
+      where: { name: proveedor },
     });
 
     // Validar existencia de los registros
@@ -47,7 +45,7 @@ export async function POST(req: NextRequest) {
     const nuevaCondicion = await prisma.condiciones_comerciales.create({
       data: {
         condicion,
-        ramoId: ramoData.id,         // Usar el `id` del ramo
+        ramoId: ramoData.id, // Usar el `id` del ramo
         proveedorId: proveedorData.id, // Usar el `id` del proveedor
       },
     });

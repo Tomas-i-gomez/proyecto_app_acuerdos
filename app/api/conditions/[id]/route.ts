@@ -25,7 +25,7 @@ export async function PUT(
       );
     }
 
-    // Verificar si el cliente existe antes de actualizar
+    // Verificar si existe antes de actualizar
     const condicionExistente = await prisma.condiciones_comerciales.findUnique({
       where: { id: Number(id) },
     });
@@ -36,7 +36,7 @@ export async function PUT(
       );
     }
 
-    // Actualizar el cliente
+    // Actualizar
     const condicionActualizada = await prisma.condiciones_comerciales.update({
       where: { id: Number(id) },
       data: {
