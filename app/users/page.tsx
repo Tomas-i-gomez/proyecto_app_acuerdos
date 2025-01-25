@@ -1,12 +1,13 @@
-import React from 'react'
-import Users from '@/app/components/Tables/TablaUsuarios';
+import React from "react";
+import Users from "@/app/components/Tables/TablaUsuarios";
+import { UserProvider } from "../context/UsersContext";
 
 const UsersList = () => {
-    return (
-        <div>
-            < Users />
-        </div>
-    )
-}
+  return (
+    <UserProvider>
+      <Users />
+    </UserProvider>
+  );
+};
 
 export default UsersList;

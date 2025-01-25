@@ -14,7 +14,7 @@ export async function POST(req: NextRequest) {
   try {
     const { name, mail, rol, clave } = await req.json();
 
-    if (!name || !mail || !rol) {
+    if (!name || !mail || !rol || !clave) {
       return NextResponse.json(
         { error: "Todos los campos son requeridos" },
         { status: 400 }
