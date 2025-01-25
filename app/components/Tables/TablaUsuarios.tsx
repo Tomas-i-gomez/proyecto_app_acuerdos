@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import NavBar from "../NavBar";
 import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
@@ -98,7 +98,24 @@ const UserTable = () => {
   );
   const currentUsers = filteredUsers.slice(startIndex, endIndex);
 
-  const uniqueRoles = users.filter((role) => role.rol);
+  //------------------------------- ROLES ----------------------------------------------
+  const [roles, setRoles] = useState<string[]>([]);
+  useEffect(() => {
+    const fetchRoles = async () => {
+      try {
+        const res = await fetch("/api/roles");
+        if (!res.ok) {
+          throw new Error("Error fetching roles");
+        }
+        const data = await res.json();
+        setRoles(data);
+      } catch (error) {
+        console.error("Error fetching roles:", error);
+      }
+    };
+
+    fetchRoles();
+  }, []);
 
   return (
     <div>
@@ -284,9 +301,9 @@ const UserTable = () => {
                     <option value="" disabled>
                       Selecciona un Rol
                     </option>
-                    {uniqueRoles.map((uniqueRol) => (
-                      <option key={uniqueRol.id} value={uniqueRol.id}>
-                        {uniqueRol.rol}
+                    {roles.map((uniqueRol) => (
+                      <option key={uniqueRol} value={uniqueRol}>
+                        {uniqueRol}
                       </option>
                     ))}
                   </select>
@@ -376,9 +393,9 @@ const UserTable = () => {
                     <option value="" disabled>
                       Selecciona un Rol
                     </option>
-                    {uniqueRoles.map((uniqueRol) => (
-                      <option key={uniqueRol.id} value={uniqueRol.id}>
-                        {uniqueRol.rol}
+                    {roles.map((uniqueRol) => (
+                      <option key={uniqueRol} value={uniqueRol}>
+                        {uniqueRol}
                       </option>
                     ))}
                   </select>

@@ -70,7 +70,7 @@ export async function DELETE(
     });
 
     return new Response(
-      JSON.stringify({ message: "Proveedor eliminado correctamente" }),
+      JSON.stringify({ message: "Cliente eliminado correctamente" }),
       {
         status: 200,
       }
