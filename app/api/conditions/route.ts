@@ -31,9 +31,9 @@ export async function POST(req: NextRequest) {
   const proveedorId = searchParams.get("proveedorId");
 
   try {
-    const { condicion, ramo, proveedorId } = await req.json();
+    const { condicion, ramoId } = await req.json();
 
-    if (!condicion || !ramo || !proveedorId) {
+    if (!condicion || !ramoId || !proveedorId) {
       return NextResponse.json(
         { error: "Todos los campos son requeridos" },
         { status: 400 }
@@ -42,7 +42,7 @@ export async function POST(req: NextRequest) {
 
     // Buscar IDs correspondientes
     const ramoData = await prisma.ramo.findUnique({
-      where: { name: ramo },
+      where: { id: parseInt(ramoId) },
     });
     const proveedorData = await prisma.proveedores.findUnique({
       where: { id: parseInt(proveedorId) },
@@ -61,7 +61,11 @@ export async function POST(req: NextRequest) {
       data: {
         condicion,
         ramoId: ramoData.id, // Usar el `id` del ramo
-        proveedorId: proveedorId, // Usar el `id` del proveedor
+        proveedorId: proveedorData.id, // Usar el `id` del proveedor
+      },
+      include: {
+        proveedor: true,
+        ramo: true,
       },
     });
 

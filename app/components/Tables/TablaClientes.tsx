@@ -35,8 +35,6 @@ const ClientTable = () => {
   };
 
   const handleUpdateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(99999);
-
     e.preventDefault();
     updateClient(Number(selectedClient.id), selectedClient);
     closeModal();
@@ -56,7 +54,6 @@ const ClientTable = () => {
       setFormData({ id: "", razon_social: "", ramoId: "" });
       AddCloseModal();
     } catch (error) {
-      console.log("aaaaa", error);
       return false;
     }
   };
@@ -159,7 +156,7 @@ const ClientTable = () => {
               onClick={exportToExcel}
               className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
             >
-              Exportar tabla
+              Exportar Clientes
             </button>
           </div>
           <table className="w-full border-collapse">

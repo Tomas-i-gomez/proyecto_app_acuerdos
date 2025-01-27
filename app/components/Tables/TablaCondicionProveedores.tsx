@@ -21,6 +21,7 @@ const CondicionesTable = () => {
     condicion: "",
   });
   const [searchQuery, setSearchQuery] = useState("");
+  const { id } = useParams();
 
   //----------------------------------fetching--------------------------------------------------------
 
@@ -51,7 +52,6 @@ const CondicionesTable = () => {
 
   const handleCreateSubmit = async (e: any) => {
     e.preventDefault();
-    const { id } = useParams();
     try {
       const response = await fetch(`/api/conditions?proveedorId=${id}`, {
         method: "POST",
@@ -64,7 +64,6 @@ const CondicionesTable = () => {
       setFormData({ id: "", ramoId: "", condicion: "", proveedorId: "" });
       AddCloseModal();
     } catch (error) {
-      console.log("aaaaa", error);
       return false;
     }
   };
@@ -74,7 +73,7 @@ const CondicionesTable = () => {
   const endIndex = startIndex + itemsPerPage;
   const filteredCondiciones = condiciones
     ? condiciones.filter((condiciones) =>
-        condiciones.ramo.name.toLowerCase().includes(searchQuery.toLowerCase())
+        condiciones.ramo?.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
   const currentCondiciones = filteredCondiciones.slice(startIndex, endIndex);

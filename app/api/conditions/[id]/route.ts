@@ -10,8 +10,9 @@ export async function PUT(
   { params }: { params: { id: string } }
 ) {
   try {
-    const id = Number(params.id); // Obtener ID desde la URL y convertirlo a número
-    if (isNaN(id)) {
+    const { id } = await params;
+    const conditionId = parseInt(id);
+    if (isNaN(conditionId)) {
       return NextResponse.json({ error: "ID inválido" }, { status: 400 });
     }
 
@@ -27,7 +28,7 @@ export async function PUT(
 
     // Verificar si existe antes de actualizar
     const condicionExistente = await prisma.condiciones_comerciales.findUnique({
-      where: { id: Number(id) },
+      where: { id: conditionId },
     });
     if (!condicionExistente) {
       return NextResponse.json(
@@ -38,7 +39,7 @@ export async function PUT(
 
     // Actualizar
     const condicionActualizada = await prisma.condiciones_comerciales.update({
-      where: { id: Number(id) },
+      where: { id: conditionId },
       data: {
         condicion,
         ramoId: ramoId ? Number(ramoId) : undefined, // Asegurar que ramoId sea un número si se pasa

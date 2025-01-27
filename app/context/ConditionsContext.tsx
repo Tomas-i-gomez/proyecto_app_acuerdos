@@ -73,12 +73,14 @@ export const CondicionProvider = ({ children }: { children: ReactNode }) => {
       body: JSON.stringify(updatedData),
     });
     const updatedCondicion = await res.json();
+    console.log(updatedCondicion);
     setCondiciones((prev) =>
       prev.map((condicion) =>
         condicion.id === id ? updatedCondicion : condicion
       )
     );
   };
+  console.log(condiciones);
 
   useEffect(() => {
     fetchCondicion();
