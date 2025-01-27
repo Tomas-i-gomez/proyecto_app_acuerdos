@@ -45,6 +45,7 @@ const CondicionesTable = () => {
     console.log(99999);
 
     e.preventDefault();
+    console.log(selectedCondiciones, "Esta es la condicion");
 
     updateCondicion(Number(selectedCondiciones.id), selectedCondiciones);
     closeModal();
@@ -248,7 +249,7 @@ const CondicionesTable = () => {
                   </label>
                   <input
                     type="text"
-                    name="name"
+                    name="condicion"
                     onChange={(e) => handleInputChange(e)}
                     required
                     className="mt-1 p-2 border w-full rounded-lg"
