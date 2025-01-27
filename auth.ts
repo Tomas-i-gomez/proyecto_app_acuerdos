@@ -1,10 +1,10 @@
-import NextAuth from "next-auth";
 import { ZodError } from "zod";
 import Credentials from "next-auth/providers/credentials";
 
 import { signInSchema } from "./app/lib/zod";
 import { prisma } from "./app/lib/prisma";
 import { compare } from "bcryptjs";
+import NextAuth from "next-auth";
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
@@ -17,7 +17,10 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       },
       async authorize(credentials: { mail: string; password: string }) {
         try {
-          const { mail, password } = await signInSchema.parseAsync(credentials);
+          console.log(11111111111111111111);
+
+          const { mail, password } = credentials;
+          console.log(mail, "aaaaaaaaaaaaaaaaaaaaaa");
 
           // logic to salt and hash password
           const user = await prisma.usuario.findUnique({
@@ -52,10 +55,8 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     async signIn({ user }) {
       const email = user.email!;
       const name = user.name!;
-      await prisma.usuario.upsert({
+      await prisma.usuario.findUnique({
         where: { mail: email },
-        update: {},
-        create: undefined,
       });
       return true;
     },

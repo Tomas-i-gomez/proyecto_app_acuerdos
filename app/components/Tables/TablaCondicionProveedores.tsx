@@ -42,8 +42,6 @@ const CondicionesTable = () => {
   };
 
   const handleUpdateSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log(99999);
-
     e.preventDefault();
     console.log(selectedCondiciones, "Esta es la condicion");
 
