@@ -8,7 +8,7 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const LoginForm = () => {
-  const [email, setEmail] = useState("");
+  const [mail, setMail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
   const router = useRouter();
@@ -17,13 +17,15 @@ const LoginForm = () => {
     e.preventDefault();
 
     const res = await signIn("credentials", {
-      email,
+      mail,
       password,
       redirect: false,
     });
 
     if (!res || res.error) {
-      setError(res?.error || "Invalid credentials");
+      setError(
+        res?.error || "Credenciales inválidas. Por favor, intenta de nuevo."
+      );
     } else {
       router.push("/dashboard");
     }
@@ -53,8 +55,8 @@ const LoginForm = () => {
               type="email"
               id="email"
               name="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              value={mail}
+              onChange={(e) => setMail(e.target.value)}
               required
               placeholder="Ingresa tu correo"
               className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"

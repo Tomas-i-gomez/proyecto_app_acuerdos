@@ -14,8 +14,8 @@ const CondicionesTable = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
   const [selectedCondiciones, setSelectedCondiciones] = useState({
-    id: "",
-    proveedorId: "",
+    id: 0,
+    proveedor: { id: 0, name: "" },
     ramoId: "",
     condicion: "",
   });
@@ -72,7 +72,7 @@ const CondicionesTable = () => {
   const endIndex = startIndex + itemsPerPage;
   const filteredCondiciones = condiciones
     ? condiciones.filter((condiciones) =>
-        condiciones.condicion.toLowerCase().includes(searchQuery.toLowerCase())
+        condiciones.ramo.name.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
   const currentCondiciones = filteredCondiciones.slice(startIndex, endIndex);
@@ -85,8 +85,8 @@ const CondicionesTable = () => {
   // Función para cerrar el modal
   const AddCloseModal = () => {
     setSelectedCondiciones({
-      id: "",
-      proveedorId: "",
+      id: 0,
+      proveedor: { id: 0, name: "" },
       ramoId: "",
       condicion: "",
     });
@@ -102,8 +102,8 @@ const CondicionesTable = () => {
   // Función para cerrar el modal
   const closeModal = () => {
     setSelectedCondiciones({
-      id: "",
-      proveedorId: "",
+      id: 0,
+      proveedor: { id: 0, name: "" },
       ramoId: "",
       condicion: "",
     });
@@ -248,37 +248,12 @@ const CondicionesTable = () => {
                   <input
                     type="text"
                     name="name"
-                    value={selectedCondiciones?.condicion}
                     onChange={(e) => handleInputChange(e)}
+                    required
                     className="mt-1 p-2 border w-full rounded-lg"
                   />
                 </div>
 
-                <div className="mb-4">
-                  <label className="block text-sm font-medium text-gray-700">
-                    Ramo
-                  </label>
-                  <select
-                    value={selectedCondiciones?.ramoId}
-                    onChange={(e) =>
-                      setSelectedCondiciones({
-                        ...selectedCondiciones,
-                        ramoId: e.target.value,
-                      })
-                    }
-                    required
-                    className="w-full text-black px-4 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                  >
-                    <option value="" disabled>
-                      Selecciona un Ramo
-                    </option>
-                    {uniqueRamos.map((uniqueRamo) => (
-                      <option key={uniqueRamo.id} value={uniqueRamo.id}>
-                        {uniqueRamo.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
                 <div className="flex justify-end">
                   <button
                     type="button"

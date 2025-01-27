@@ -1,5 +1,6 @@
 "use client";
 
+import { useParams } from "next/navigation";
 import {
   createContext,
   ReactNode,
@@ -33,18 +34,25 @@ const CondicionContext = createContext<CondicionContextType | undefined>(
 export const CondicionProvider = ({ children }: { children: ReactNode }) => {
   const [condiciones, setCondiciones] = useState<Condiciones[]>([]);
 
+  const { id } = useParams();
   const fetchCondicion = async () => {
+    if (!id) return; // Evitar hacer fetch si id es undefined
+
     try {
-      const res = await fetch("/api/conditions");
+      const res = await fetch(`/api/conditions?proveedorId=${id}`);
       if (!res.ok) {
-        throw new Error("Error fetching conditions");
+        throw new Error("Error fetching condiciones");
       }
       const data = await res.json();
       setCondiciones(data);
     } catch (error) {
-      console.error("Error fetching conditions: ", error);
+      console.error("Error fetching condiciones:", error);
     }
   };
+
+  useEffect(() => {
+    fetchCondicion();
+  }, [id]);
 
   const addCondicion = (condicion: Condiciones) => {
     setCondiciones((prevCondicion) => [...prevCondicion, condicion]);

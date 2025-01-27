@@ -6,7 +6,7 @@ import { signInSchema } from "./app/lib/zod";
 import { prisma } from "./app/lib/prisma";
 import { compare } from "bcryptjs";
 
-export const { handlers, auth } = NextAuth({
+export const { handlers, auth, signIn, signOut } = NextAuth({
   providers: [
     Credentials({
       // You can specify which fields should be submitted, by adding keys to the `credentials` object.
@@ -49,11 +49,29 @@ export const { handlers, auth } = NextAuth({
     }),
   ],
   callbacks: {
-    async redirect({ url, baseUrl }) {
-      // Redirige a /dashboard después del inicio de sesión
-      return "/dashboard";
+    async signIn({ user }) {
+      const email = user.email!;
+      const name = user.name!;
+      await prisma.usuario.upsert({
+        where: { mail: email },
+        update: {},
+        create: undefined,
+      });
+      return true;
+    },
+    async jwt({ token, user }: { token: any; user?: any }) {
+      if (user) {
+        const dbUser = await prisma.usuario.findUnique({
+          where: { mail: user.email },
+        });
+
+        token.role = dbUser?.rol || "Vendedor";
+      }
+      return token;
     },
   },
+  secret: process.env.AUTH_SECRET!,
+  session: {
+    strategy: "jwt", // Usamos JWT para manejar sesiones
+  },
 });
-
-//

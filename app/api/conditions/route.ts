@@ -3,15 +3,27 @@ import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient({});
 
-export async function GET() {
-  const condiciones = await prisma.condiciones_comerciales.findMany({
-    include: {
-      proveedor: true,
-      ramo: true,
-    },
-  });
+export async function GET(req: NextRequest) {
+  const { searchParams } = new URL(req.url);
+  const proveedorId = searchParams.get("proveedorId");
 
-  return new Response(JSON.stringify(condiciones), { status: 200 });
+  try {
+    const condiciones = await prisma.condiciones_comerciales.findMany({
+      where: proveedorId ? { proveedorId: parseInt(proveedorId) } : undefined,
+      include: {
+        proveedor: true,
+        ramo: true,
+      },
+    });
+
+    return NextResponse.json(condiciones, { status: 200 });
+  } catch (error) {
+    console.error("Error fetching condiciones:", error);
+    return NextResponse.json(
+      { error: "Error interno del servidor" },
+      { status: 500 }
+    );
+  }
 }
 
 export async function POST(req: NextRequest) {

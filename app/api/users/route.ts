@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
+import { hash } from "bcryptjs";
 
 const prisma = new PrismaClient({});
 
@@ -20,12 +21,13 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+    const hashedPw = await hash(clave, 10);
     // Crear en la base de datos
     const nuevoUsuario = await prisma.usuario.create({
       data: {
         name,
         mail,
-        clave,
+        clave: hashedPw,
         rol,
       },
     });

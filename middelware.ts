@@ -8,14 +8,20 @@ export async function middleware(req: NextRequest) {
     return NextResponse.redirect(new URL("/login", req.url));
   }
 
-  // Verificar si el usuario tiene algun role para acceder a /tasks
   if (req.nextUrl.pathname.startsWith("/dashboard") && token.role === "Admin") {
-    return NextResponse.redirect(new URL("/dashboard", req.url));
+    return NextResponse.redirect(new URL("/", req.url));
+  }
+
+  if (req.nextUrl.pathname.startsWith("/ramo") && token.role === "Admin") {
+    return NextResponse.redirect(new URL("/proveedores", req.url));
+  }
+  if (req.nextUrl.pathname.startsWith("/users") && token.role === "Admin") {
+    return NextResponse.redirect(new URL("/proveedores", req.url));
   }
 
   return NextResponse.next();
 }
 
 export const config = {
-  matcher: ["/dashboard/:path*"], // Aplica el middleware solo a rutas específicas
+  matcher: ["/dashboard/:path*", "/ramo/:path*", "/users/:path*"], // Aplica el middleware solo a rutas específicas
 };
