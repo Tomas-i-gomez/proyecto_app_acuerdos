@@ -120,7 +120,7 @@ const UserTable = () => {
   return (
     <div>
       <NavBar />
-      <div className="p-8 bg-gray-100 min-h-screen">
+      <div className="p-8 bg-gray-100 min-h-screen overflow-x-auto">
         <div className="max-w-4xl mx-auto bg-white shadow rounded-lg">
           <div className="p-6">
             <h2 className="text-xl font-bold text-gray-800">Usuarios</h2>
@@ -152,8 +152,8 @@ const UserTable = () => {
               + Crear Usuario
             </button>
           </div>
-          <table className="w-full border-collapse">
-            <thead>
+          <table className="w-full border-collapse overflow-x-auto">
+            <thead className="overflow-x-auto">
               <tr className="bg-gray-50">
                 <th className="text-left px-6 py-3 text-xs font-medium text-gray-500 uppercase tracking-wider">
                   Nombre
@@ -169,7 +169,7 @@ const UserTable = () => {
                 </th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="overflow-x-auto">
               {currentUsers.map((user) => (
                 <tr key={user.id} className="border-t">
                   <td className="px-6 py-4 text-sm text-gray-800">
@@ -179,7 +179,7 @@ const UserTable = () => {
                     {user.mail}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-800">
-                    {user.clave}
+                    {user.clave.slice(0, 10)}
                   </td>
                   <td className="px-6 py-4 text-sm text-gray-800">
                     {user.rol}

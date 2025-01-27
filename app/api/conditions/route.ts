@@ -27,10 +27,13 @@ export async function GET(req: NextRequest) {
 }
 
 export async function POST(req: NextRequest) {
-  try {
-    const { condicion, ramo, proveedor } = await req.json();
+  const { searchParams } = new URL(req.url);
+  const proveedorId = searchParams.get("proveedorId");
 
-    if (!condicion || !ramo || !proveedor) {
+  try {
+    const { condicion, ramo, proveedorId } = await req.json();
+
+    if (!condicion || !ramo || !proveedorId) {
       return NextResponse.json(
         { error: "Todos los campos son requeridos" },
         { status: 400 }
@@ -42,7 +45,7 @@ export async function POST(req: NextRequest) {
       where: { name: ramo },
     });
     const proveedorData = await prisma.proveedores.findUnique({
-      where: { name: proveedor },
+      where: { id: parseInt(proveedorId) },
     });
 
     // Validar existencia de los registros
@@ -58,7 +61,7 @@ export async function POST(req: NextRequest) {
       data: {
         condicion,
         ramoId: ramoData.id, // Usar el `id` del ramo
-        proveedorId: proveedorData.id, // Usar el `id` del proveedor
+        proveedorId: proveedorId, // Usar el `id` del proveedor
       },
     });
 

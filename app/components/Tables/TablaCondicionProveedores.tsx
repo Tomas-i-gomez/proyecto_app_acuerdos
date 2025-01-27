@@ -7,6 +7,7 @@ import { useClientContext } from "@/app/context/ClientContext";
 import { useRamoContext } from "@/app/context/RamoContext";
 import { useCondicionesContext } from "@/app/context/ConditionsContext";
 import { useProveedorContext } from "@/app/context/ProveedorContext";
+import { useParams } from "next/navigation";
 
 const CondicionesTable = () => {
   const itemsPerPage = 10;
@@ -50,8 +51,9 @@ const CondicionesTable = () => {
 
   const handleCreateSubmit = async (e: any) => {
     e.preventDefault();
+    const { id } = useParams();
     try {
-      const response = await fetch("/api/conditions", {
+      const response = await fetch(`/api/conditions?proveedorId=${id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(formData),

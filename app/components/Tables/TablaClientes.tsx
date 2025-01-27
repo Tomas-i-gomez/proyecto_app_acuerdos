@@ -2,9 +2,10 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import NavBar from "../NavBar";
-import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
+import { ArrowUpIcon, SearchIcon, TrashIcon } from "@heroicons/react/outline";
 import { useClientContext } from "@/app/context/ClientContext";
 import { useRamoContext } from "@/app/context/RamoContext";
+import * as XLSX from "xlsx";
 
 const ClientTable = () => {
   const itemsPerPage = 10;
@@ -102,6 +103,24 @@ const ClientTable = () => {
   // Filtramos RAMOS UNICOS para el dropdown
   const uniqueRamos = ramos.filter((ramo) => ramo.name);
 
+  // Funcion para exportar la tabla a excel
+  const exportToExcel = () => {
+    // Mapea los datos de la tabla al formato que quieres exportar
+    const dataToExport = filteredClients.map((client) => ({
+      "Nro Cliente": client.id,
+      "Razón Social": client.razon_social,
+      Ramo: client.ramo.name,
+    }));
+
+    // Crea una hoja de cálculo
+    const worksheet = XLSX.utils.json_to_sheet(dataToExport);
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Clientes");
+
+    // Genera y descarga el archivo Excel
+    XLSX.writeFile(workbook, "clientes.xlsx");
+  };
+
   return (
     <div>
       <NavBar />
@@ -135,6 +154,12 @@ const ClientTable = () => {
               className="px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm hover:bg-indigo-700"
             >
               + Agregar Cliente
+            </button>
+            <button
+              onClick={exportToExcel}
+              className="px-4 py-2 bg-green-600 text-white rounded-lg text-sm hover:bg-green-700"
+            >
+              Exportar tabla
             </button>
           </div>
           <table className="w-full border-collapse">
