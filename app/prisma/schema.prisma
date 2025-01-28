@@ -4,7 +4,7 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = "mysql://root:lebrontomi@localhost:3306/acuerdosdb"
+  url      = "mysql://root:root@localhost:3306/acuerdosdb"
 }
 
 model clientes {
@@ -42,7 +42,7 @@ model ramo {
 }
 
 model usuario {
-  id    Int    @id @default(autoincrement())
+  id    String @id @default(uuid())
   name  String
   clave String
   mail  String @unique

@@ -1,64 +1,57 @@
-import { ZodError } from "zod";
-import Credentials from "next-auth/providers/credentials";
-
-import { signInSchema } from "./app/lib/zod";
-import { prisma } from "./app/lib/prisma";
-import { compare } from "bcryptjs";
 import NextAuth from "next-auth";
+import Credentials from "next-auth/providers/credentials";
+import { prisma } from "./app/lib/prisma";
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
+export const { handlers, signIn, signOut, auth } = NextAuth({
   providers: [
     Credentials({
-      // You can specify which fields should be submitted, by adding keys to the `credentials` object.
-      // e.g. domain, username, password, 2FA token, etc.
       credentials: {
-        mail: { label: "email", type: "email" },
-        password: { label: "password", type: "password" },
+        email: { label: "Email", type: "email" },
+        password: { label: "Password", type: "password" },
       },
-      async authorize(credentials: { mail: string; password: string }) {
-        try {
-          console.log(11111111111111111111);
+      authorize: async (credentials) => {
+        const { email, password } = credentials as {
+          email: string;
+          password: string;
+        };
+        console.log(credentials, "ESTO ES EN CREDENTIALS!!!");
 
-          const { mail, password } = credentials;
-          console.log(mail, "aaaaaaaaaaaaaaaaaaaaaa");
+        // Buscar el usuario en la base de datos
+        const user = await prisma.usuario.findUnique({
+          where: {
+            mail: email,
+          },
+        });
+        console.log(user, "Existe??");
 
-          // logic to salt and hash password
-          const user = await prisma.usuario.findUnique({
-            where: { mail },
-          });
-
-          if (!user) {
-            throw new Error("Usuario no encontrado. Invalid credentials.");
-          }
-          const isValidPassword = await compare(password, user.clave);
-          if (!isValidPassword) {
-            throw new Error("Contraseña Incorrecta.Invalid credentials.");
-          }
-
-          // return JSON object with the user data
-          return {
-            id: user.id,
-            name: user.name,
-            mail: user.mail,
-            rol: user.rol,
-          };
-        } catch (error) {
-          if (error instanceof ZodError) {
-            // Return `null` to indicate that the credentials are invalid
-            return null;
-          }
+        if (!user) {
+          return null; // Credenciales inválidas
         }
+
+        // Comparar la contraseña proporcionada con el hash almacenado
+        if (password !== user.clave) {
+          return null;
+        }
+        // Retornar el objeto de usuario
+        return {
+          id: user.id.toString(),
+          email: user.mail,
+          name: user.name,
+          role: user.rol,
+        };
       },
     }),
   ],
   callbacks: {
-    async signIn({ user }) {
-      const email = user.email!;
-      const name = user.name!;
-      await prisma.usuario.findUnique({
-        where: { mail: email },
-      });
-      return true;
+    // async signIn({ credentials }) {
+    //   console.log(credentials, "Que es esootooooo");
+    //   return true;
+    // },
+    async session({ session, token }: { session: any; token: any }) {
+      if (token?.role) {
+        session.user.role = token.role;
+      }
+      return session;
     },
     async jwt({ token, user }: { token: any; user?: any }) {
       if (user) {
@@ -66,13 +59,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
           where: { mail: user.email },
         });
 
-        token.role = dbUser?.rol || "Vendedor";
+        token.role = dbUser?.rol || "USER";
       }
       return token;
     },
   },
   secret: process.env.AUTH_SECRET!,
   session: {
-    strategy: "jwt", // Usamos JWT para manejar sesiones
+    strategy: "jwt",
   },
 });
