@@ -42,6 +42,16 @@ const ClientTable = () => {
 
   const handleCreateSubmit = async (e: any) => {
     e.preventDefault();
+
+    const exists = clients.some(
+      (client) => client.id === parseInt(formData.id)
+    );
+    if (exists) {
+      alert(`El cliente con ID ${formData.id} ya existe.`);
+      return;
+    }
+
+    // Lógica existente para enviar la solicitud
     try {
       const response = await fetch("/api/client", {
         method: "POST",
@@ -49,12 +59,23 @@ const ClientTable = () => {
         body: JSON.stringify(formData),
       });
 
-      const newClient = await response.json();
-      addClient(newClient);
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.error) {
+          alert(data.error);
+        } else {
+          alert("Ocurrió un error al agregar el cliente.");
+        }
+        return;
+      }
+
+      addClient(data);
       setFormData({ id: "", razon_social: "", ramoId: "" });
       AddCloseModal();
     } catch (error) {
-      return false;
+      console.error("Error al agregar cliente:", error);
+      alert("Ocurrió un error inesperado.");
     }
   };
 
@@ -63,7 +84,7 @@ const ClientTable = () => {
   const endIndex = startIndex + itemsPerPage;
   const filteredClients = clients
     ? clients.filter((client) =>
-        client.razon_social.toLowerCase().includes(searchQuery.toLowerCase())
+        client.razon_social?.toLowerCase().includes(searchQuery.toLowerCase())
       )
     : [];
   const currentClients = filteredClients.slice(startIndex, endIndex);

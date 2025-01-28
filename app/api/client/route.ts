@@ -29,8 +29,8 @@ export async function POST(req: NextRequest) {
         { status: 400 }
       );
     }
+
     try {
-      // Crear el cliente en la base de datos
       const nuevoCliente = await prisma.clientes.create({
         data: {
           id: parseInt(id),
@@ -40,20 +40,25 @@ export async function POST(req: NextRequest) {
         include: { ramo: true },
       });
 
-      console.log(nuevoCliente);
-      // Devolver la respuesta
       return NextResponse.json(nuevoCliente, { status: 201 });
     } catch (error) {
-      const errorMsg = handlePrismaDBError(
-        error as PrismaClientKnownRequestError
-      );
-      return NextResponse.json({ error: errorMsg }, { status: 400 });
+      if (
+        error instanceof PrismaClientKnownRequestError &&
+        error.code === "P2002"
+      ) {
+        // Error específico para violación de unicidad
+        return NextResponse.json(
+          { error: `El cliente con ID ${id} ya existe.` },
+          { status: 400 }
+        );
+      }
+      throw error;
     }
   } catch (error) {
     console.error("Error al crear cliente:", error);
     return NextResponse.json(
       { error: "Error interno del servidor" },
-      { status: 400 }
+      { status: 500 }
     );
   }
 }
