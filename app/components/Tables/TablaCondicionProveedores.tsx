@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import NavBar from "../NavBar";
 import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
-import { useClientContext } from "@/app/context/ClientContext";
+
 import { useRamoContext } from "@/app/context/RamoContext";
 import { useCondicionesContext } from "@/app/context/ConditionsContext";
 import { useProveedorContext } from "@/app/context/ProveedorContext";

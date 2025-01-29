@@ -1,22 +1,24 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { Disclosure, DisclosureButton, DisclosurePanel, Menu, MenuButton, MenuItem, MenuItems } from '@headlessui/react'
-import { UsersIcon, BriefcaseIcon, LogoutIcon } from "@heroicons/react/outline";
-import Link from 'next/link';
-
+import React from "react";
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
+import { LogoutIcon } from "@heroicons/react/outline";
+import Link from "next/link";
 
 const navigation = [
-  { name: 'Dashboard', href: '/dashboard', current: true },
-  { name: 'Proveedores', href: '/proveedores', current: false },
-  { name: 'Clientes', href: '/clientes', current: false },
-  { name: 'Ramos', href: '/ramo', current: false },
-  { name: 'Usuarios', href: '/users', current: false },
-  
-]
+  { name: "Dashboard", href: "/dashboard", current: true },
+  { name: "Proveedores", href: "/proveedores", current: false },
+  { name: "Clientes", href: "/clientes", current: false },
+  { name: "Ramos", href: "/ramo", current: false },
+  { name: "Usuarios", href: "/users", current: false },
+];
 
-function classNames(...classes: string[]): string{
-  return classes.filter(Boolean).join(' ')
+function classNames(...classes: string[]): string {
+  return classes.filter(Boolean).join(" ");
 }
 
 export default function Example() {
@@ -45,10 +47,12 @@ export default function Example() {
                   <Link
                     key={item.name}
                     href={item.href}
-                    aria-current={item.current ? 'page' : undefined}
+                    aria-current={item.current ? "page" : undefined}
                     className={classNames(
-                      item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                      'rounded-md px-3 py-2 text-sm font-medium',
+                      item.current
+                        ? "bg-gray-900 text-white"
+                        : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                      "rounded-md px-3 py-2 text-sm font-medium"
                     )}
                   >
                     {item.name}
@@ -77,10 +81,12 @@ export default function Example() {
               key={item.name}
               as="a"
               href={item.href}
-              aria-current={item.current ? 'page' : undefined}
+              aria-current={item.current ? "page" : undefined}
               className={classNames(
-                item.current ? 'bg-gray-900 text-white' : 'text-gray-300 hover:bg-gray-700 hover:text-white',
-                'block rounded-md px-3 py-2 text-base font-medium',
+                item.current
+                  ? "bg-gray-900 text-white"
+                  : "text-gray-300 hover:bg-gray-700 hover:text-white",
+                "block rounded-md px-3 py-2 text-base font-medium"
               )}
             >
               {item.name}
@@ -89,5 +95,5 @@ export default function Example() {
         </div>
       </DisclosurePanel>
     </Disclosure>
-  )
+  );
 }

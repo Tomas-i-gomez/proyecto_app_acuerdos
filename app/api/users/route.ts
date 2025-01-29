@@ -8,7 +8,7 @@ const prisma = new PrismaClient({});
 export async function GET() {
   const usuario = await prisma.usuario.findMany();
 
-  return new Response(JSON.stringify(usuario), { status: 200 });
+  return new NextResponse(JSON.stringify(usuario), { status: 200 });
 }
 
 export async function POST(req: NextRequest) {

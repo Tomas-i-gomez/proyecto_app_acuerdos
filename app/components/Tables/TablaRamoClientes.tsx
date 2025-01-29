@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import NavBar from "../NavBar";
 import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
 import { useRamoContext } from "@/app/context/RamoContext";
@@ -9,7 +9,7 @@ const RamoTable = () => {
   const itemsPerPage = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-  const [selectedRamo, setSelectedRamo] = useState({ id: "", name: "" });
+  const [, setSelectedRamo] = useState({ id: "", name: "" });
   const [searchQuery, setSearchQuery] = useState("");
 
   //----------------------------------fetching--------------------------------------------------------

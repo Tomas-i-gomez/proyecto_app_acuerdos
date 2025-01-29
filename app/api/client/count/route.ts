@@ -1,7 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient, Prisma } from "@prisma/client";
-import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
-import { handlePrismaDBError } from "@/app/utils/prismaErrors";
+import { PrismaClient } from "@prisma/client";
 
 const prisma = new PrismaClient({ log: ["warn", "error"] });
 

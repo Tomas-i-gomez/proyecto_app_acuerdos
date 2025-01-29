@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const ProveedoresTable = () => {
   const [isModalOpenAdd, setIsModalOpenAdd] = useState(false);
-  const [selectedProveedor, setSelectedProveedor] = useState({
+  const [, setSelectedProveedor] = useState({
     id: "",
     name: "",
   });
