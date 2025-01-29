@@ -7,8 +7,13 @@ const prisma = new PrismaClient({});
 //----------------------------------------------- MODELO USUARIOS ----------------------------------------------------------
 export async function GET() {
   const usuario = await prisma.usuario.findMany();
-
-  return new NextResponse(JSON.stringify(usuario), { status: 200 });
+  try {
+    return new NextResponse(JSON.stringify(usuario), { status: 200 });
+  } catch (error) {
+    if (error instanceof Error) {
+      console.log("Error: ", error.stack);
+    }
+  }
 }
 
 export async function POST(req: NextRequest) {
@@ -35,7 +40,10 @@ export async function POST(req: NextRequest) {
     // Devolver la respuesta
     return NextResponse.json(nuevoUsuario, { status: 201 });
   } catch (error) {
-    console.error("Error al crear usuario:", error);
+    if (error instanceof Error) {
+      console.log("Error al crerar usuario: ", error.stack);
+    }
+
     return NextResponse.json(
       { error: "Error interno del servidor" },
       { status: 500 }

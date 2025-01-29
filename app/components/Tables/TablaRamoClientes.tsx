@@ -4,6 +4,7 @@ import { useState } from "react";
 import NavBar from "../NavBar";
 import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
 import { useRamoContext } from "@/app/context/RamoContext";
+import Swal from "sweetalert2";
 
 const RamoTable = () => {
   const itemsPerPage = 10;
@@ -114,12 +115,26 @@ const RamoTable = () => {
                     <div className="flex items-center space-x-4">
                       <button
                         onClick={() => {
-                          const confirmed = window.confirm(
-                            "¿Estás seguro de eliminar el ramo?"
-                          );
-                          if (confirmed) {
-                            handleDelete(ramo.id); // Si el usuario confirma, llama a la función de eliminar
-                          }
+                          Swal.fire({
+                            title: "¿Estás seguro?",
+                            text: "No podrás revertir esta acción.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Sí, eliminar",
+                            cancelButtonText: "Cancelar",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              handleDelete(ramo.id); // Llama a la función de eliminar si el usuario confirma
+                              Swal.fire({
+                                title: "Eliminado",
+                                text: "El ramo ha sido eliminado correctamente.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                              });
+                            }
+                          });
                         }}
                         className="text-red-600 hover:text-red-800 font-medium flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
                       >

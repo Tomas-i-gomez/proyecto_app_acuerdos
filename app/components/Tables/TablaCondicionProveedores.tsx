@@ -8,6 +8,7 @@ import { useRamoContext } from "@/app/context/RamoContext";
 import { useCondicionesContext } from "@/app/context/ConditionsContext";
 import { useProveedorContext } from "@/app/context/ProveedorContext";
 import { useParams } from "next/navigation";
+import Swal from "sweetalert2";
 
 const CondicionesTable = () => {
   const itemsPerPage = 10;
@@ -189,12 +190,26 @@ const CondicionesTable = () => {
                       </button>
                       <button
                         onClick={() => {
-                          const confirmed = window.confirm(
-                            "¿Estás seguro de eliminar al cliente?"
-                          );
-                          if (confirmed) {
-                            handleDelete(condicion.id); // Si el usuario confirma, llama a la función de eliminar
-                          }
+                          Swal.fire({
+                            title: "¿Estás seguro?",
+                            text: "No podrás revertir esta acción.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Sí, eliminar",
+                            cancelButtonText: "Cancelar",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              handleDelete(condicion.id); // Llama a la función de eliminar si el usuario confirma
+                              Swal.fire({
+                                title: "Eliminado",
+                                text: "La condicion ha sido eliminado correctamente.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                              });
+                            }
+                          });
                         }}
                         className="text-red-600 hover:text-red-800 font-medium flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
                       >

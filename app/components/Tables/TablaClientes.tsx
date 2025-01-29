@@ -5,6 +5,7 @@ import NavBar from "../NavBar";
 import { SearchIcon, TrashIcon } from "@heroicons/react/outline";
 import { useClientContext } from "@/app/context/ClientContext";
 import { useRamoContext } from "@/app/context/RamoContext";
+import Swal from "sweetalert2";
 import * as XLSX from "xlsx";
 
 const ClientTable = () => {
@@ -47,7 +48,14 @@ const ClientTable = () => {
       (client) => client.id === parseInt(formData.id)
     );
     if (exists) {
-      alert(`El cliente con ID ${formData.id} ya existe.`);
+      Swal.fire({
+        title: "Error",
+        text: `El cliente con ID ${formData.id} ya existe.`,
+        icon: "error",
+        confirmButtonText: "Aceptar",
+        confirmButtonColor: "#3085d6",
+      });
+
       return;
     }
 
@@ -217,12 +225,26 @@ const ClientTable = () => {
                       </button>
                       <button
                         onClick={() => {
-                          const confirmed = window.confirm(
-                            "¿Estás seguro de eliminar al cliente?"
-                          );
-                          if (confirmed) {
-                            handleDelete(client.id); // Si el usuario confirma, llama a la función de eliminar
-                          }
+                          Swal.fire({
+                            title: "¿Estás seguro?",
+                            text: "No podrás revertir esta acción.",
+                            icon: "warning",
+                            showCancelButton: true,
+                            confirmButtonColor: "#d33",
+                            cancelButtonColor: "#3085d6",
+                            confirmButtonText: "Sí, eliminar",
+                            cancelButtonText: "Cancelar",
+                          }).then((result) => {
+                            if (result.isConfirmed) {
+                              handleDelete(client.id); // Llama a la función de eliminar si el usuario confirma
+                              Swal.fire({
+                                title: "Eliminado",
+                                text: "El cliente ha sido eliminado correctamente.",
+                                icon: "success",
+                                confirmButtonText: "OK",
+                              });
+                            }
+                          });
                         }}
                         className="text-red-600 hover:text-red-800 font-medium flex items-center justify-center px-4 py-2 border border-gray-300 rounded-md"
                       >
